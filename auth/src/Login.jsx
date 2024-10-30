@@ -1,13 +1,19 @@
 import React, {useRef, useState, useEffect, useContext} from 'react'
-import AuthContext from './context/AuthProvider';
-
+import useAuth from './hooks/useAuth';
+import {Link, useNavigate, useLocation} from 'react-router-dom';
 
 import axios from './api/axios';
 const LOGIN_URL = '/login';
 
 
 function Login() {
-    const { setAuth} = useContext(AuthContext);
+    const {setAuth} = useAuth();
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location?.state?.from?.pathname || {pathname: '/'};
+
+
     const userRef = useRef();
     const errRef = useRef();
 
@@ -42,8 +48,10 @@ function Login() {
             // console.log(response?.data);
             // console.log(response?.accessToken);
             // console.log(JSON.stringify(response))
-            setAuth({user, pwd});
+            const userData = { username: 'baljinder', token: '12345' };
+            setAuth(userData);
             setSuccess(true);
+            navigate(from, {replace: true});
             console.log("Login Successful");
         } catch (error) {
             console.error(error);
